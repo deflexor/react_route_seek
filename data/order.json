@@ -1,0 +1,95 @@
+{
+  "count": 2,
+  "next": null,
+  "previous": null,
+  "results": [{
+    "id": 1,
+    "broker": 4,
+    "code": "123321557",
+    "pay_date": null,
+    "created": "2016-02-29T13:12:23.644000Z",
+    "modified": "2016-02-29T13:13:06.100000Z",
+    "pay_terms": {
+      "id": 1,
+      "name": "Cash"
+    },
+    "is_paid": false,
+    "start_date_up": null,
+    "start_date_down": null,
+    "end_date_up": null,
+    "end_date_down": null,
+    "comments": "TESTTESTTEST",
+    "fix_total": "1.00",
+    "from_place": null,
+    "to_place": null,
+    "items": [{
+      "id": 1,
+      "created": "2016-02-29T13:13:06.103000Z",
+      "modified": "2016-02-29T13:13:06.103000Z",
+      "cargo": "Spoons for KFC",
+      "price": "2.00",
+      "order": 1
+    }]
+  }, {
+    "id": 2,
+    "broker": 4,
+    "code": "1234sdfhfg",
+    "pay_date": null,
+    "created": "2016-02-29T13:23:08.008000Z",
+    "modified": "2016-03-01T09:30:57.327000Z",
+    "pay_terms": {
+      "id": 1,
+      "name": "Cash"
+    },
+    "is_paid": false,
+    "start_date_up": null,
+    "start_date_down": null,
+    "end_date_up": null,
+    "end_date_down": null,
+    "comments": "wergwerg",
+    "fix_total": "10.00",
+    "from_place": {
+      "id": 1,
+      "created": "2016-02-29T13:10:37.750000Z",
+      "modified": "2016-03-03T13:34:38.729000Z",
+      "postalcode": "85034",
+      "street": "1337 So 27th Street- Building B Phoenix, AZ 85034",
+      "place": {
+        "type": "Point",
+        "coordinates": [-112.17994846018074, 33.58359920935199]
+      },
+      "country": 1,
+      "region": 38,
+      "city": 2168
+    },
+    "to_place": {
+      "id": 2,
+      "created": "2016-02-29T13:12:07.752000Z",
+      "modified": "2016-03-03T13:34:19.529000Z",
+      "postalcode": "95113",
+      "street": "95 South Market Street, Suite 300 - San Jose, CA 95113",
+      "place": {
+        "type": "Point",
+        "coordinates": [-121.90284884944846, 37.29577561530337]
+      },
+      "country": 1,
+      "region": 33,
+      "city": 2488
+    },
+    "items": [{
+      "id": 3,
+      "created": "2016-02-29T13:23:08.011000Z",
+      "modified": "2016-02-29T13:23:08.011000Z",
+      "cargo": "Wasabi for MacD",
+      "price": "2.00",
+      "order": 2
+    }, {
+      "id": 2,
+      "created": "2016-02-29T13:23:08.010000Z",
+      "modified": "2016-02-29T13:23:08.010000Z",
+      "cargo": "Spoons for KFC",
+      "price": "2.00",
+      "order": 2
+    }]
+  }]
+}

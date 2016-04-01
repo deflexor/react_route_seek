@@ -1,0 +1,32 @@
+{
+  "count": 2,
+  "next": null,
+  "previous": null,
+  "results": [{
+    "id": 1,
+    "created": "2016-02-29T13:10:37.750000Z",
+    "modified": "2016-03-03T13:34:38.729000Z",
+    "postalcode": "85034",
+    "street": "1337 So 27th Street- Building B Phoenix, AZ 85034",
+    "place": {
+      "type": "Point",
+      "coordinates": [-112.17994846018074, 33.58359920935199]
+    },
+    "country": 1,
+    "region": 38,
+    "city": 2168
+  }, {
+    "id": 2,
+    "created": "2016-02-29T13:12:07.752000Z",
+    "modified": "2016-03-03T13:34:19.529000Z",
+    "postalcode": "95113",
+    "street": "95 South Market Street, Suite 300 - San Jose, CA 95113",
+    "place": {
+      "type": "Point",
+      "coordinates": [-121.90284884944846, 37.29577561530337]
+    },
+    "country": 1,
+    "region": 33,
+    "city": 2488
+  }]
+}

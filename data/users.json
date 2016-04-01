@@ -1,0 +1,38 @@
+{
+  "count": 5,
+  "next": null,
+  "previous": null,
+  "results": [{
+    "id": 2,
+    "password": "",
+    "last_login": null,
+    "email": "a@b.com",
+    "date_joined": "2016-01-28T09:19:33.276000Z",
+    "username": "abcom",
+    "first_name": "",
+    "last_name": "",
+    "is_admin": true,
+    "company": 1,
+    "groups": [{
+      "id": 1,
+      "name": "Owner"
+    }],
+    "attribs": [1]
+  }, {
+    "id": 4,
+    "password": "",
+    "last_login": null,
+    "email": "b@c.com",
+    "date_joined": "2016-02-24T12:25:39.270253Z",
+    "username": "bccom",
+    "first_name": "",
+    "last_name": "",
+    "is_admin": false,
+    "company": 1,
+    "groups": [{
+      "id": 3,
+      "name": "Broker"
+    }],
+    "attribs": []
+  }]
+}

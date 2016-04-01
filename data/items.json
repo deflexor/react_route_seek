@@ -1,0 +1,27 @@
+{
+  "count": 3,
+  "next": null,
+  "previous": null,
+  "results": [{
+    "id": 1,
+    "created": "2016-02-29T13:13:06.103000Z",
+    "modified": "2016-02-29T13:13:06.103000Z",
+    "cargo": "Spoons for KFC",
+    "price": "2.00",
+    "order": 1
+  }, {
+    "id": 2,
+    "created": "2016-02-29T13:23:08.010000Z",
+    "modified": "2016-02-29T13:23:08.010000Z",
+    "cargo": "Spoons for KFC",
+    "price": "2.00",
+    "order": 2
+  }, {
+    "id": 3,
+    "created": "2016-02-29T13:23:08.011000Z",
+    "modified": "2016-02-29T13:23:08.011000Z",
+    "cargo": "Wasabi for MacD",
+    "price": "2.00",
+    "order": 2
+  }]
+}
