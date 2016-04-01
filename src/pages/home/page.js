@@ -3,12 +3,9 @@ import styles from "./style.css";
 
 
 export default class HomePage extends React.Component {
-  render() {
-    return (
-      <div className={styles.content}>
-        <h1>Home Page</h1>
-        <p className={styles.welcomeText}>Thanks for joining!</p>
-      </div>
-    );
-  }
+    render() {
+        return (
+			<h1>Brand.io</h1>
+        );
+    }
 }

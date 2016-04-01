@@ -5,7 +5,7 @@
   "main": "src/main.js",
   "scripts": {
     "postinstall": "npm run build",
-    "server": "supervisor start.js",
+    "server": "supervisor -w server.js start.js",
     "build": "webpack -p --progress --config webpack.production.config.js",
     "test": "nyc ava --fail-fast --verbose --require babel-register",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
@@ -44,9 +44,9 @@
     "postcss-loader": "0.8.2",
     "postcss-nested": "^1.0.0",
     "react-addons-test-utils": "^0.14.7",
-    "react-hot-loader": "^1.3.0",
     "sinon": "^1.17.2",
     "style-loader": "^0.12.3",
+    "supervisor": "0.9.1",
     "webpack": "^1.12.14",
     "webpack-dev-server": "^1.14.1"
   },
@@ -54,9 +54,14 @@
     "babel-core": "^6.5.2",
     "babel-polyfill": "^6.5.0",
     "babel-runtime": "^6.5.0",
+    "classnames": "2.2.3",
     "express": "^4.12.3",
-    "react": "^0.14.7",
-    "react-dom": "^0.14.7",
-    "react-router": "^2.0.0"
+    "flexboxgrid": "6.3.0",
+    "material-ui": "0.15.0-alpha.2",
+    "react": "0.14.8",
+    "react-dom": "0.14.8",
+    "react-flexbox-grid": "0.9.5",
+    "react-router": "2.0.1",
+    "react-tap-event-plugin": "0.2.2"
   }
 }
