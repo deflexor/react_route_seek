@@ -29,6 +29,17 @@ app.get('/style.css', (req, res) => {
   }
 });
 
+
+// API
+app.all('/api/:f.json', (req, res, next) => {
+    if(/^[a-z]{1,20}$/i.test(req.params.f)) {
+        res.sendFile(`${__dirname}/data/${req.params.f}.json`);
+    }
+    else {
+        res.status(400).send({ error: 'Incorrect endpoint' });
+    }
+});
+
 // Serve index page
 app.get('*', (req, res) => {
   res.sendFile(__dirname + '/build/index.html');
