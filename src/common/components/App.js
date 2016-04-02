@@ -70,7 +70,7 @@ const ToolbarSimple = () => (
 
 export default ({children}) => {
     return (
-        <Grid className={basecss.fullwidth}>
+        <Grid>
           <Row>
             <Col xs={2}><div className={basecss.logo1}>Admin app</div></Col>
             <Col xs={10}><ToolbarSimple/></Col>
