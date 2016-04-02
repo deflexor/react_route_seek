@@ -8,7 +8,7 @@ import 'babel-polyfill';
 // Libraries
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, browserHistory } from 'react-router';
+import { Router, browserHistory, hashHistory } from 'react-router';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 // Needed for onTouchTap
@@ -29,7 +29,7 @@ const DOM_APP_EL_ID = 'app';
 
 // Render the router
 ReactDOM.render((
-  <Router history={browserHistory}>
+  <Router history={hashHistory}>
     {Routes}
   </Router>
 ), document.getElementById(DOM_APP_EL_ID));

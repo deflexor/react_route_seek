@@ -2,10 +2,10 @@ import React from "react";
 import styles from "./style.css";
 
 
-export default class HomePage extends React.Component {
+export default React.createClass({
     render() {
         return (
-			<h1>Brand.io</h1>
+			<h1>Home page</h1>
         );
     }
-}
+});

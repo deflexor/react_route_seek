@@ -3,10 +3,10 @@ import { browserHistory } from 'react-router';
 import styles from './style.css';
 
 
-export default class LoginPage extends React.Component {
+export default React.createClass({
   signUp() {
     browserHistory.push('/home');
-  }
+  },
   
   render() {
     return (
@@ -17,4 +17,5 @@ export default class LoginPage extends React.Component {
       </div>
     );
   }
-}
+});
+

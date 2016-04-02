@@ -12,14 +12,12 @@ import ToolbarSeparator from 'material-ui/lib/toolbar/toolbar-separator';
 import ToolbarTitle from 'material-ui/lib/toolbar/toolbar-title';
 import List from 'material-ui/lib/lists/list';
 import ListItem from 'material-ui/lib/lists/list-item';
+import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
+let SelectableList = SelectableContainerEnhance(List);
 
 import * as Colors from 'material-ui/lib/styles/colors';
-import IconBulb from 'material-ui/lib/svg-icons/action/lightbulb-outline';
-import IconSort from 'material-ui/lib/svg-icons/content/sort';
-import IconActionGrade from 'material-ui/lib/svg-icons/action/grade';
-import IconContentInbox from 'material-ui/lib/svg-icons/content/inbox';
-import IconContentDrafts from 'material-ui/lib/svg-icons/content/drafts';
-import IconContentSend from 'material-ui/lib/svg-icons/content/send';
+import IconHome from 'material-ui/lib/svg-icons/action/home';
+import IconInput from 'material-ui/lib/svg-icons/action/input';
 
 import basecss from '../base.css';
 
@@ -27,41 +25,34 @@ const iconStyles = {
   marginTop: 16
 };
 
-const IButton1 = () => (<IconButton touch={true}>
-                        <NavigationExpandMoreIcon />
-                        </IconButton>);
+// const IButton1 = () => (<IconButton touch={true}>
+//                         <NavigationExpandMoreIcon />
+//                         </IconButton>);
 
 
-const ListExampleNested = () => (
-    <div>
-      <List subheader="Nested List Items">
-        <ListItem primaryText="Sent mail" leftIcon={<IconContentSend />} />
-        <ListItem primaryText="Drafts" leftIcon={<IconContentDrafts />} />
-        <ListItem
-           primaryText="Inbox"
-           leftIcon={<IconContentInbox />}
-           initiallyOpen={true}
-           primaryTogglesNestedList={true}
-           nestedItems={[
-               <ListItem
-                  key={1}
-                  primaryText="Starred"
-                  leftIcon={<IconActionGrade />}
-               />,
-               <ListItem
-                  key={2}
-                  primaryText="Sent Mail"
-                  leftIcon={<IconContentSend />}
-                  disabled={true}
-                  nestedItems={[
-                          <ListItem key={1} primaryText="Drafts" leftIcon={<IconContentDrafts />} />,
-                  ]}
-               />
-           ]}
-        />
-        </List>
-   </div>
-);
+const ListItems = [
+    { title: "Начало", href: "/", icon: <IconHome /> },
+    { title: "Создание заказа", href: "/order", icon: <IconInput /> },
+];
+
+
+const ListExampleNested = React.createClass({
+    contextTypes: {
+        router: React.PropTypes.object
+    },
+    reqChange(e , path) {
+        this.context.router.push(path);
+    },
+    render() {
+        const v = ListItems.reduce((pv, v) => this.context.router.isActive(v.href) ? v.href : pv, '/');
+        return (
+            <div>
+              <SelectableList valueLink={{value: v, requestChange: this.reqChange }}>
+                {ListItems.map( (i) => <ListItem primaryText={i.title} leftIcon={i.icon} value={i.href} key={i.href} /> )}
+              </SelectableList>
+            </div>);
+    }
+});
 
 
 const ToolbarSimple = () => (
@@ -69,14 +60,8 @@ const ToolbarSimple = () => (
       <ToolbarGroup float="left">
       </ToolbarGroup>
       <ToolbarGroup float="right">
-        <ToolbarTitle text="Options" />
-        <IconSort style={iconStyles} />
-        <IconMenu iconButtonElement={IButton1()}>
-          <MenuItem primaryText="Download" />
-          <MenuItem primaryText="More Info" />
-        </IconMenu>
         <ToolbarSeparator />
-        <RaisedButton label="Create Broadcast" primary={true} />
+        <RaisedButton label="Do something" primary={true} />
       </ToolbarGroup>
     </Toolbar>
 );
@@ -91,7 +76,10 @@ export default ({children}) => {
             <Col xs={10}><ToolbarSimple/></Col>
           </Row>
           <Row>
-            <Col xs={2}><ListExampleNested /></Col>
+            <Col xs={2}>
+              <br/>
+              <ListExampleNested />
+            </Col>
             <Col xs={10}>{children}</Col>
           </Row>
         </Grid>
