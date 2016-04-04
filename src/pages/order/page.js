@@ -9,10 +9,17 @@ import styles from './style.css';
 
 
 const OrderView = React.createClass({
-    handleAddress1Select(addr) {
-        console.log('!', addr);
+    getInitialState() {
+        return {
+            point1: null,
+            point2: null
+        };
     },
-    handleAddress2Select(addr) {
+    handleAddress1Select(place) {
+        this.setState({ point1: place.geometry.location });
+    },
+    handleAddress2Select(place) {
+        this.setState({ point2: place.geometry.location });
     },
     render() {
         return (
@@ -24,7 +31,7 @@ const OrderView = React.createClass({
                      handleAddress2Select={this.handleAddress2Select} />
                 </Col>
                 <Col xs={6}>
-                  <OrderMap />
+                  <OrderMap points={[this.state.point1, this.state.point2]} />
                 </Col>
               </Row>
             </Grid>
