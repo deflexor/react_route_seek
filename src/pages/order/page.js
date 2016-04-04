@@ -12,7 +12,9 @@ const OrderView = React.createClass({
     getInitialState() {
         return {
             point1: null,
-            point2: null
+            point2: null,
+            initialAddress1: null,
+            initialAddress2: null
         };
     },
     handleAddress1Select(place) {
@@ -21,17 +23,27 @@ const OrderView = React.createClass({
     handleAddress2Select(place) {
         this.setState({ point2: place.geometry.location });
     },
+    handleDirectionsChange(dirs) {
+        const {start_address, end_address, start_location, end_location} = dirs.routes[0].legs[0];
+        this.setState({ initialAddress1: start_address,
+                        initialAddress2: end_address,
+                        point1: start_location,
+                        point2: end_location
+                      });
+    },
     render() {
         return (
             <Grid>
               <Row>
                 <Col xs={6}>
                   <OrderForm
-                     handleAddress1Select={this.handleAddress1Select}
-                     handleAddress2Select={this.handleAddress2Select} />
+                     initialAddress1={this.state.initialAddress1}
+                     initialAddress2={this.state.initialAddress2}
+                     onAddress1Select={this.handleAddress1Select}
+                     onAddress2Select={this.handleAddress2Select} />
                 </Col>
                 <Col xs={6}>
-                  <OrderMap points={[this.state.point1, this.state.point2]} />
+                  <OrderMap points={[this.state.point1, this.state.point2]} onDirectionsChanged={this.handleDirectionsChange} />
                 </Col>
               </Row>
             </Grid>

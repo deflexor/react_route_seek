@@ -27,8 +27,8 @@ const AddressInput = React.createClass({
         };
     },
     handleNewRequest(t, i) {
-        if(this.props.handleAddressSelect)
-            this.props.handleAddressSelect(this.state.dataSource[i]);
+        if(this.props.onAddressSelect)
+            this.props.onAddressSelect(this.state.dataSource[i]);
     },
     handleUpdateInput(t) {
         if(t.length < 3) return;
@@ -63,6 +63,12 @@ const AddressGroupInput = React.createClass({
 });
 
 const OrderForm = React.createClass({
+    propTypes: {
+        initialAddress1: React.PropTypes.string,
+        initialAddress2: React.PropTypes.string,
+        onAddress1Select: React.PropTypes.func.isRequired,
+        onAddress2Select: React.PropTypes.func.isRequired
+    },
     contextTypes: {
         router: React.PropTypes.object
     },
@@ -93,26 +99,31 @@ const OrderForm = React.createClass({
                    >
                   <AddressGroupInput
                      name="address_from"
-                     handleAddressSelect={this.props.handleAddress1Select}
+                     onAddressSelect={this.props.onAddress1Select}
                      validations="isWords"
                      validationError={wordsError}
                      required
                      hintText="Россия, Москва, Тверская, 1"
                      floatingLabelText="Адрес (откуда)"
+                     searchText={this.props.initialAddress1}
+                     tabIndex={1}
                      />
                   <AddressGroupInput
                      name="address_from"
-                     handleAddressSelect={this.props.handleAddress2Select}
+                     onAddressSelect={this.props.onAddress2Select}
                      validations="isWords"
                      validationError={wordsError}
                      required
                      hintText="Россия, Москва, Тверская, 2"
                      floatingLabelText="Адрес доставки (куда)"
+                     searchText={this.props.initialAddress2}
+                     tabIndex={2}
                      />
                   <FormsySelect
                      name="broker"
                      required
-                     floatingLabelText="Ответственное лицо (брокер)">
+                     floatingLabelText="Ответственное лицо (брокер)"
+                     tabIndex={3}>
                     {this.state.users.map( (i) => <MenuItem key={i.id} value={i.id} primaryText={`${i.email} ${i.first_name}`} /> )}
                   </FormsySelect><br/>
                   <FormsyToggle
@@ -121,8 +132,8 @@ const OrderForm = React.createClass({
                 </Formsy.Form>
               </CardText>
               <CardActions>
-                <RaisedButton label="Сохранить" primary={true} className={styles.but} />
-                <RaisedButton label="Очистить" secondary={true} className={styles.but} />
+                <RaisedButton label="Сохранить" primary={true} className={styles.but} tabIndex={7} />
+                <RaisedButton label="Очистить" secondary={true} className={styles.but} tabIndex={8} />
               </CardActions>
             </Card>
         );

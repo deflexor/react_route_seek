@@ -7,6 +7,10 @@ import styles from './order_map.css';
 
 
 const OrderMap = React.createClass({
+    propTypes: {
+        onDirectionsChanged: React.PropTypes.func.isRequired,
+        points: React.PropTypes.array.isRequired
+    },
     getInitialState() {
         return {
             directions: null,
@@ -44,10 +48,17 @@ const OrderMap = React.createClass({
             }
         });
     },
+    directionsChanged() {
+        const dirs = this.refs.dirs.getDirections();
+        this.props.onDirectionsChanged(dirs);
+    },
     render () {
         const { directions, info } = this.state;
         const center = this.props.center || { lat: 60, lng: 105 };
-        const overlay = info ? (
+        const dirNode = directions ?
+              <DirectionsRenderer ref="dirs" directions={directions} options={{draggable:true}} onDirectionsChanged={this.directionsChanged} /> :
+              null;
+        const overlayNode = info ? (
             <OverlayView
                position={this.refs.map ? this.refs.map.getCenter() : center}
                mapPaneName={OverlayView.OVERLAY_LAYER}
@@ -66,8 +77,8 @@ const OrderMap = React.createClass({
               defaultZoom={12}
               defaultCenter={center}
               onClick={() => this.handleMapClick}>
-              {directions ? <DirectionsRenderer directions={directions} /> : null}
-              {overlay}
+              {dirNode}
+              {overlayNode}
             </GoogleMap>
         );
         
