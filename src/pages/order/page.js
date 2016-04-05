@@ -26,15 +26,15 @@ const OrderView = React.createClass({
         if(place && place.geometry) this.setState({ point2: place.geometry.location });
     },
     handlePointsChange(points) {
-		const sobj = {};
-		if(points[0]) {
-			sobj.initialAddress1 = points[0].formatted_address;
-			sobj.point1 = points[0].geometry.location;
-		}
-		if(points[1]) {
-			sobj.initialAddress2 = points[1].formatted_address;
-			sobj.point2 = points[1].geometry.location;
-		}
+        const sobj = {};
+        if(points[0]) {
+            sobj.initialAddress1 = points[0].formatted_address;
+            sobj.point1 = points[0].geometry.location;
+        }
+        if(points[1]) {
+            sobj.initialAddress2 = points[1].formatted_address;
+            sobj.point2 = points[1].geometry.location;
+        }
         this.setState(sobj);
     },
     render() {
@@ -61,7 +61,7 @@ export default React.createClass({
     render() {
         return (
             <div className={styles.content}>
-			  <h1>Новый заказ</h1>
+              <h1>Новый заказ</h1>
               <OrderView/>
             </div>
         );

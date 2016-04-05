@@ -52,47 +52,47 @@ const OrderMap = React.createClass({
     },
     directionsChanged() {
         const dirs = this.refs.dirs.getDirections().geocoded_waypoints;
-		geocodeLocations(dirs).then((places) =>
-			this.props.onPointsChanged(places));
+        geocodeLocations(dirs).then((places) =>
+            this.props.onPointsChanged(places));
     },
     markerPosChanged(e) {
-		const positions = [0,1].map((i) => this.refs['mk'+i]).map((r) => r ? r.getPosition() : null);
-		geocodeLocations(positions).then((places) =>
-			this.props.onPointsChanged(places));
+        const positions = [0,1].map((i) => this.refs['mk'+i]).map((r) => r ? r.getPosition() : null);
+        geocodeLocations(positions).then((places) =>
+            this.props.onPointsChanged(places));
     },
     render () {
         const { directions, info } = this.state;
         const center = this.props.center || { lat: 60, lng: 105 };
         const directionsNode = directions ?
-              <DirectionsRenderer ref="dirs" directions={directions} options={{draggable:true}} onDirectionsChanged={this.directionsChanged} /> :
-              null;
+            <DirectionsRenderer ref="dirs" directions={directions} options={{draggable:true}} onDirectionsChanged={this.directionsChanged} /> :
+            null;
         const overlayNode = info ? (
             <OverlayView
-               position={this._googleMap ? this._googleMap.getCenter() : center}
-               mapPaneName={OverlayView.OVERLAY_LAYER}
-               getPixelPositionOffset={this.getPixelPositionOffset}>
-               <div className={styles.overlay}>
-                 <h4>{info}</h4>
-               </div>
+                position={this._googleMap ? this._googleMap.getCenter() : center}
+                mapPaneName={OverlayView.OVERLAY_LAYER}
+                getPixelPositionOffset={this.getPixelPositionOffset}>
+              <div className={styles.overlay}>
+                <h4>{info}</h4>
+              </div>
             </OverlayView>
         ) : null;
-		const markerNodes = directionsNode ? [] : this.props.points.map((p, i) => {
-			if(p) {
-				if(this._googleMap) this._googleMap.panTo(p);
-				return (<Marker position={p} key={i} ref={'mk' + i} draggable={true} onDragend={this.markerPosChanged} />);
-			}
-			else return null;
-		});
+        const markerNodes = directionsNode ? [] : this.props.points.map((p, i) => {
+            if(p) {
+                if(this._googleMap) this._googleMap.panTo(p);
+                return (<Marker position={p} key={i} ref={'mk' + i} draggable={true} onDragend={this.markerPosChanged} />);
+            }
+            else return null;
+        });
         const container = (
             <div style={{ height: 480, width: 400 }} />
         );
         const gMap = (
             <GoogleMap
-              ref={(map) => { if(map) { window.googleMap = map.props.map; this._googleMap = map } }}
-              defaultZoom={12}
-              defaultCenter={center}
-              onClick={() => this.handleMapClick}>
-			  {markerNodes}
+                ref={(map) => { if(map) { window.googleMap = map.props.map; this._googleMap = map } }}
+                defaultZoom={12}
+                defaultCenter={center}
+                onClick={() => this.handleMapClick}>
+              {markerNodes}
               {directionsNode}
               {overlayNode}
             </GoogleMap>
