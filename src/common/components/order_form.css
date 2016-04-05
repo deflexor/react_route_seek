@@ -1,0 +1,12 @@
+
+.cardTitle {
+    padding-bottom: 0px !important;
+}
+
+.label1 > span {
+    display: block;
+}
+
+.label1 > div {
+    display: inline-block;
+}

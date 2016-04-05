@@ -7,6 +7,8 @@ import OrderMap from '../../common/components/OrderMap';
 
 import styles from './style.css';
 
+import {fetchPlaces} from '../../utils.js';
+
 
 const OrderView = React.createClass({
     getInitialState() {
@@ -18,19 +20,22 @@ const OrderView = React.createClass({
         };
     },
     handleAddress1Select(place) {
-        this.setState({ point1: place.geometry.location });
+        if(place && place.geometry) this.setState({ point1: place.geometry.location });
     },
     handleAddress2Select(place) {
-        this.setState({ point2: place.geometry.location });
+        if(place && place.geometry) this.setState({ point2: place.geometry.location });
     },
-    handleDirectionsChange(dirs) {
-		//dirs.geocoded_waypoints
-        const {start_address, end_address, start_location, end_location} = dirs.routes[0].legs[0];
-        this.setState({ initialAddress1: start_address,
-                        initialAddress2: end_address,
-                        point1: start_location,
-                        point2: end_location
-                      });
+    handlePointsChange(points) {
+		const sobj = {};
+		if(points[0]) {
+			sobj.initialAddress1 = points[0].formatted_address;
+			sobj.point1 = points[0].geometry.location;
+		}
+		if(points[1]) {
+			sobj.initialAddress2 = points[1].formatted_address;
+			sobj.point2 = points[1].geometry.location;
+		}
+        this.setState(sobj);
     },
     render() {
         return (
@@ -44,7 +49,7 @@ const OrderView = React.createClass({
                       onAddress2Select={this.handleAddress2Select} />
                 </Col>
                 <Col xs={6}>
-                  <OrderMap points={[this.state.point1, this.state.point2]} onDirectionsChanged={this.handleDirectionsChange} />
+                  <OrderMap points={[this.state.point1, this.state.point2]} onPointsChanged={this.handlePointsChange} />
                 </Col>
               </Row>
             </Grid>

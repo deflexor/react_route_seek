@@ -1,14 +1,16 @@
 import React from 'react';
 
-import { GoogleMapLoader, GoogleMap, DirectionsRenderer, OverlayView } from "react-google-maps";
+import { GoogleMapLoader, GoogleMap, DirectionsRenderer, Marker, OverlayView } from "react-google-maps";
 import {GMAPS_API_KEY} from "../../config.js";
 
 import styles from './order_map.css';
 
+import {geocodeLocations} from '../../utils.js';
+
 
 const OrderMap = React.createClass({
     propTypes: {
-        onDirectionsChanged: React.PropTypes.func.isRequired,
+        onPointsChanged: React.PropTypes.func.isRequired,
         points: React.PropTypes.array.isRequired
     },
     getInitialState() {
@@ -49,13 +51,19 @@ const OrderMap = React.createClass({
         });
     },
     directionsChanged() {
-        const dirs = this.refs.dirs.getDirections();
-        this.props.onDirectionsChanged(dirs);
+        const dirs = this.refs.dirs.getDirections().geocoded_waypoints;
+		geocodeLocations(dirs).then((places) =>
+			this.props.onPointsChanged(places));
+    },
+    markerPosChanged(e) {
+		const positions = [0,1].map((i) => this.refs['mk'+i]).map((r) => r ? r.getPosition() : null);
+		geocodeLocations(positions).then((places) =>
+			this.props.onPointsChanged(places));
     },
     render () {
         const { directions, info } = this.state;
         const center = this.props.center || { lat: 60, lng: 105 };
-        const dirNode = directions ?
+        const directionsNode = directions ?
               <DirectionsRenderer ref="dirs" directions={directions} options={{draggable:true}} onDirectionsChanged={this.directionsChanged} /> :
               null;
         const overlayNode = info ? (
@@ -68,6 +76,13 @@ const OrderMap = React.createClass({
                </div>
             </OverlayView>
         ) : null;
+		const markerNodes = directionsNode ? [] : this.props.points.map((p, i) => {
+			if(p) {
+				if(this._googleMap) this._googleMap.panTo(p);
+				return (<Marker position={p} key={i} ref={'mk' + i} draggable={true} onDragend={this.markerPosChanged} />);
+			}
+			else return null;
+		});
         const container = (
             <div style={{ height: 480, width: 400 }} />
         );
@@ -77,7 +92,8 @@ const OrderMap = React.createClass({
               defaultZoom={12}
               defaultCenter={center}
               onClick={() => this.handleMapClick}>
-              {dirNode}
+			  {markerNodes}
+              {directionsNode}
               {overlayNode}
             </GoogleMap>
         );

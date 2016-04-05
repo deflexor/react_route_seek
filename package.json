@@ -59,6 +59,8 @@
     "flexboxgrid": "6.3.0",
     "formsy-material-ui": "0.3.8",
     "formsy-react": "0.17.0",
+    "intl": "1.1.0",
+    "intl-locales-supported": "1.0.0",
     "isomorphic-fetch": "2.2.1",
     "material-ui": "0.14.4",
     "react": "0.14.8",

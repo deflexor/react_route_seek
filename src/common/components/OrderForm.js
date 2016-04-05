@@ -5,18 +5,20 @@ import RaisedButton from 'material-ui/lib/raised-button';
 import Card from 'material-ui/lib/card/card';
 import CardActions from 'material-ui/lib/card/card-actions';
 import CardTitle from 'material-ui/lib/card/card-title';
+import CardHeader from 'material-ui/lib/card/card-header';
 import CardText from 'material-ui/lib/card/card-text';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 
 import FMUI from 'formsy-material-ui';
 const { FormsyCheckbox, FormsyDate, FormsyRadio, FormsyRadioGroup, FormsySelect, FormsyText, FormsyTime, FormsyToggle } = FMUI;
 import FormsyAutoText from './FormsyAutoText';
+import FormsyLocDate from './FormsyLocDate';
 
 import fetch from 'isomorphic-fetch';
 
 import styles from './order_form.css';
 
-import {normalizePlaces} from '../../utils.js';
+import {fetchPlaces} from '../../utils.js';
 
 const ErrorMessages = {
     wordsError: "Please only use letters"
@@ -43,9 +45,9 @@ const AddressInput = React.createClass({
 			// only use: place_id, description
             const ds = (status == google.maps.places.PlacesServiceStatus.OK) ? results.filter((r) => r.place_id) : [];
             if(ds.length > 6) ds.splice(6);
-			const a = normalizePlaces(ds).then((dsFilled) => {
+			const a = fetchPlaces(ds).then((dsFilled) => {
 				//console.log(dsFilled);
-				this.setState({ dataSource: dsFilled.filter((i) => i.geometry) }), (err) => console.error(err)
+				this.setState({ dataSource: dsFilled.filter((i) => i && i.geometry) }), (err) => console.error(err)
 			});
         });
     },
@@ -82,7 +84,8 @@ const OrderForm = React.createClass({
     },
     getInitialState() {
         return {
-            users: []
+            users: [],
+			canSubmit: false
         };
     },
     componentDidMount() {
@@ -92,58 +95,122 @@ const OrderForm = React.createClass({
             });
         });
     },
-
+	enableButton: function () {
+		this.setState({
+			canSubmit: true
+		});
+	},
+	disableButton: function () {
+		this.setState({
+			canSubmit: false
+		});
+	},
+	submitForm: function (model, reset, invalidate) {
+		// Submit your validated form
+		console.log("Model: ", model);
+	},
     render() {
         const {wordsError} = ErrorMessages;
         
         return (
-            <Card className={styles.card}>
-              <CardTitle title="Добавление заказа" subtitle="данные о заказе" />
-              <CardText>
-                <Formsy.Form
+            <Formsy.Form
+				   ref="form"
                    onValid={this.enableButton}
                    onInvalid={this.disableButton}
                    onValidSubmit={this.submitForm}
-                   >
+            >
+              <Card className={styles.card}>
+				<CardTitle title="Адреса загрузки и выгрузки" subtitle="точки доставки" className={styles.cardTitle} />
+				<CardText>
                   <AddressGroupInput
-                     name="address_from"
-                     onAddressSelect={this.props.onAddress1Select}
-                     validations="isWords"
-                     validationError={wordsError}
-                     required
-                     hintText="Россия, Москва, Тверская, 1"
-                     floatingLabelText="Адрес (откуда)"
-                     searchText={this.props.initialAddress1}
-                     tabIndex={1}
-                     />
+                      name="address_from"
+                      onAddressSelect={this.props.onAddress1Select}
+                      validations="isWords"
+                      validationError={wordsError}
+                      required
+                      hintText="Россия, Москва, Тверская, 1"
+                      floatingLabelText="Адрес (откуда)"
+                      searchText={this.props.initialAddress1}
+                      tabIndex={1}
+                  />
                   <AddressGroupInput
-                     name="address_from"
-                     onAddressSelect={this.props.onAddress2Select}
-                     validations="isWords"
-                     validationError={wordsError}
-                     required
-                     hintText="Россия, Москва, Тверская, 2"
-                     floatingLabelText="Адрес доставки (куда)"
-                     searchText={this.props.initialAddress2}
-                     tabIndex={2}
-                     />
+                      name="address_from"
+                      onAddressSelect={this.props.onAddress2Select}
+                      validations="isWords"
+                      validationError={wordsError}
+                      required
+                      hintText="Россия, Москва, Тверская, 2"
+                      floatingLabelText="Адрес доставки (куда)"
+                      searchText={this.props.initialAddress2}
+                      tabIndex={2}
+                  />
+				</CardText>
+				<CardTitle title="Параметры заказа" subtitle="основные параметры заказа" className={styles.cardTitle} />
+				<CardText>
                   <FormsySelect
-                     name="broker"
-                     required
-                     floatingLabelText="Ответственное лицо (брокер)"
-                     tabIndex={3}>
-                    {this.state.users.map( (i) => <MenuItem key={i.id} value={i.id} primaryText={`${i.email} ${i.first_name}`} /> )}
+                      name="broker"
+                      required
+                      floatingLabelText="Ответственное лицо (брокер)"
+                      tabIndex={3}>
+					{this.state.users.map( (i) => <MenuItem key={i.id} value={i.id} primaryText={`${i.email} ${i.first_name}`} /> )}
                   </FormsySelect><br/>
-                  <FormsyToggle
-                     name="toggle"
-                     label="Toggle" />
-                </Formsy.Form>
-              </CardText>
-              <CardActions>
-                <RaisedButton label="Сохранить" primary={true} className={styles.but} tabIndex={7} />
-                <RaisedButton label="Очистить" secondary={true} className={styles.but} tabIndex={8} />
-              </CardActions>
-            </Card>
+				  <label className={styles.label1}>Дата загрузки 
+					<FormsyLocDate
+						name="start_date_up"
+						autoOk={true}
+						hintText="от"
+						tabIndex={4}
+					/>
+					<FormsyLocDate
+						name="start_date_down"
+						autoOk={true}
+						hintText="до"
+						tabIndex={5}
+					/>
+				  </label>
+				  <label className={styles.label1}>Дата выгрузки 
+					<FormsyLocDate
+						name="end_date_up"
+						autoOk={true}
+						hintText="от"
+						tabIndex={6}
+					/>
+					<FormsyLocDate
+						name="end_date_down"
+						autoOk={true}
+						hintText="до"
+						tabIndex={7}
+					/>
+				  </label>
+				  <FormsyText
+                      name="code"
+                      validationError={wordsError}
+                      required
+                      hintText="12345"
+                      floatingLabelText="Номер заказа"
+                      tabIndex={8}
+                  /><br/>
+				  <FormsyText
+                      name="fix_total"
+                      required
+                      hintText="1.00"
+                      floatingLabelText="Fix total"
+                      tabIndex={9}
+                  /><br/>
+				  <FormsyText
+                      name="comments"
+					  multiLine={true}
+					  rows={3}
+                      floatingLabelText="Комментарий"
+                      tabIndex={10}
+                  /><br/>
+				</CardText>
+				<CardActions>
+                  <RaisedButton label="Сохранить" type="submit" primary={true} tabIndex={11}  />
+                  <RaisedButton label="Очистить" type="reset" secondary={true} tabIndex={12} />
+				</CardActions>
+              </Card>
+            </Formsy.Form>
         );
     }
 });
