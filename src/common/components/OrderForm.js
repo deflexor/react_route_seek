@@ -18,11 +18,7 @@ import fetch from 'isomorphic-fetch';
 
 import styles from './order_form.css';
 
-import {fetchPlaces} from '../../utils.js';
-
-const ErrorMessages = {
-    wordsError: "Please only use letters"
-};
+import {geocodeLocations, fetchPlaces} from '../../utils.js';
 
 const acService = new google.maps.places.AutocompleteService();
 
@@ -45,11 +41,14 @@ const AddressInput = React.createClass({
             // only use: place_id, description
             const ds = (status == google.maps.places.PlacesServiceStatus.OK) ? results.filter((r) => r.place_id) : [];
             if(ds.length > 6) ds.splice(6);
-            const a = fetchPlaces(ds).then((dsFilled) => {
+            const a = geocodeLocations(ds).then((dsFilled) => {
                 //console.log(dsFilled);
                 this.setState({ dataSource: dsFilled.filter((i) => i && i.geometry) }), (err) => console.error(err)
             });
         });
+    },
+    getValue() {
+        return this.state.selected !== null ? this.state.dataSource[this.state.selected] : null;
     },
     render() {
         return (
@@ -58,16 +57,6 @@ const AddressInput = React.createClass({
                             onUpdateInput={this.handleUpdateInput}
                             onNewRequest={this.handleNewRequest}
                             filter={AutoComplete.caseInsensitiveFilter} />
-        );
-    }
-});
-
-const AddressGroupInput = React.createClass({
-    render() {
-        return (
-            <div>
-              <AddressInput {...this.props} />
-            </div>
         );
     }
 });
@@ -114,8 +103,22 @@ const OrderForm = React.createClass({
         });
     },
     submitForm (model, reset, invalidate) {
-        // Submit your validated form
-        console.log("Model: ", model);
+        const geoPlaces = ["from_place", "to_place"].map( (n) => this.refs[n].getValue() );
+        //fetchPlaces(geoPlaces).then((places) => {
+        ["from_place", "to_place"].forEach((n, i) => model[n] = geoPlaces[i]);
+        fetch('/api/orders.json', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(model)
+        }).then((r) => r.json()).then((r) => {
+            if('errors' in r)
+                invalidate(r.errors)
+            else
+                alert('Добавлен заказ!');
+        });
     },
     onAddress1Select(place) {
         this.setState({ address1: place });
@@ -126,23 +129,20 @@ const OrderForm = React.createClass({
         this.props.onAddress2Select(place);
     }, 
     render() {
-        const {wordsError} = ErrorMessages;
-        
         return (
             <Formsy.Form
               ref="form"
               onValid={this.enableButton}
               onInvalid={this.disableButton}
-              onValidSubmit={this.submitForm}
+              onSubmit={this.submitForm}
             >
               <Card className={styles.card}>
                 <CardTitle title="Адреса загрузки и выгрузки" subtitle="точки доставки" className={styles.cardTitle} />
                 <CardText>
-                  <AddressGroupInput
-                      name="address_from"
+                  <AddressInput
+                      name="from_place"
+                      ref="from_place"
                       onAddressSelect={this.onAddress1Select}
-                      validations="isWords"
-                      validationError={wordsError}
                       required
                       hintText="Россия, Москва, Тверская, 1"
                       floatingLabelText="Адрес (откуда)"
@@ -150,11 +150,10 @@ const OrderForm = React.createClass({
                       fullWidth={true}
                       tabIndex={1}
                   />
-                  <AddressGroupInput
-                      name="address_from"
+                  <AddressInput
+                      name="to_place"
+                      ref="to_place"
                       onAddressSelect={this.onAddress2Select}
-                      validations="isWords"
-                      validationError={wordsError}
                       required
                       hintText="Россия, Москва, Тверская, 2"
                       floatingLabelText="Адрес доставки (куда)"
@@ -202,15 +201,12 @@ const OrderForm = React.createClass({
                   </label>
                   <FormsyText
                       name="code"
-                      validationError={wordsError}
-                      required
                       hintText="12345"
                       floatingLabelText="Номер заказа"
                       tabIndex={8}
                   /><br/>
                   <FormsyText
                       name="fix_total"
-                      required
                       hintText="1.00"
                       floatingLabelText="Fix total"
                       tabIndex={9}

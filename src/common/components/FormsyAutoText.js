@@ -57,6 +57,7 @@ let FormsyAutoText = React.createClass({
         onEnterKeyDown={this.handleEnterKeyDown}
         errorText={this.getErrorMessage()}
         value={this.getValue()}
+        autoComplete="off" 
       />
     );
   }

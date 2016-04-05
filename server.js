@@ -1,6 +1,46 @@
 import express from 'express';
-const app = express();
+import validate from "validate.js";
+import bodyParser from 'body-parser';
 
+const app = express();
+app.use(bodyParser.json());
+
+
+var order_constraints = {
+    from_place:  {
+        presence: true
+    },
+    to_place:  {
+        presence: true
+    },
+    broker: {
+        presence: true,
+        numericality: {
+            onlyInteger: true,
+            greaterThan: 0
+        }
+    },
+    code: {
+        presence: true,
+        format: /[a-z0-9]+/i
+    },
+    fix_total: {
+        presence: true,
+        numericality: true
+    },
+    start_date_up: {
+        presence: true
+    },
+    start_date_down: {
+        presence: true
+    },
+    end_date_up: {
+        presence: true
+    },
+    end_date_down: {
+        presence: true
+    }
+};
 
 /************************************************************
  *
@@ -31,12 +71,23 @@ app.get('/style.css', (req, res) => {
 
 
 // API
-app.all('/api/:f.json', (req, res, next) => {
+app.get('/api/:f.json', (req, res, next) => {
     if(/^[a-z]{1,20}$/i.test(req.params.f)) {
         res.sendFile(`${__dirname}/data/${req.params.f}.json`);
     }
     else {
         res.status(400).send({ error: 'Incorrect endpoint' });
+    }
+});
+
+app.post('/api/orders.json', (req, res, next) => {
+    //console.log(req.body);
+    const errors = validate(req.body, order_constraints);
+    if(errors) {
+        res.status(400).send({ errors: errors });
+    }
+    else {
+        res.status(200).send({ ok: 1 });
     }
 });
 
