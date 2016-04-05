@@ -22,6 +22,10 @@ import {geocodeLocations, fetchPlaces} from '../../utils.js';
 
 const acService = new google.maps.places.AutocompleteService();
 
+function trustfulFilter(searchText, key) {
+    return true;
+}
+
 const AddressInput = React.createClass({
     getInitialState() {
         return {
@@ -56,7 +60,7 @@ const AddressInput = React.createClass({
                             dataSource={this.state.dataSource.map((r) => r.formatted_address)}
                             onUpdateInput={this.handleUpdateInput}
                             onNewRequest={this.handleNewRequest}
-                            filter={AutoComplete.caseInsensitiveFilter} />
+                            filter={trustfulFilter} />
         );
     }
 });
