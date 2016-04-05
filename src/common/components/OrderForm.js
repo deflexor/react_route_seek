@@ -16,29 +16,37 @@ import fetch from 'isomorphic-fetch';
 
 import styles from './order_form.css';
 
+import {normalizePlaces} from '../../utils.js';
+
 const ErrorMessages = {
     wordsError: "Please only use letters"
 };
 
+const acService = new google.maps.places.AutocompleteService();
+
 const AddressInput = React.createClass({
     getInitialState() {
         return {
-            dataSource: []
+            dataSource: [],
+			selected: null
         };
     },
     handleNewRequest(t, i) {
-        if(this.props.onAddressSelect)
+        if(this.props.onAddressSelect) {
             this.props.onAddressSelect(this.state.dataSource[i]);
+			this.setState({ selected: i });
+		}
     },
     handleUpdateInput(t) {
-        if(t.length < 3) return;
-        const geocoder = new google.maps.Geocoder();
-        geocoder.geocode( { 'address': t }, (results, status) => {
-            const ds = (status == google.maps.GeocoderStatus.OK) ? results : [];
-            if(ds.length > 8) ds.splice(8);
-            this.setState({
-                dataSource: ds
-            });
+        if(t.length < 2) return;
+		acService.getQueryPredictions({ input: t }, (results, status) => {
+			// only use: place_id, description
+            const ds = (status == google.maps.places.PlacesServiceStatus.OK) ? results.filter((r) => r.place_id) : [];
+            if(ds.length > 6) ds.splice(6);
+			const a = normalizePlaces(ds).then((dsFilled) => {
+				//console.log(dsFilled);
+				this.setState({ dataSource: dsFilled.filter((i) => i.geometry) }), (err) => console.error(err)
+			});
         });
     },
     render() {

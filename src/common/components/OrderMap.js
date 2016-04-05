@@ -60,7 +60,7 @@ const OrderMap = React.createClass({
               null;
         const overlayNode = info ? (
             <OverlayView
-               position={this.refs.map ? this.refs.map.getCenter() : center}
+               position={this._googleMap ? this._googleMap.getCenter() : center}
                mapPaneName={OverlayView.OVERLAY_LAYER}
                getPixelPositionOffset={this.getPixelPositionOffset}>
                <div className={styles.overlay}>
@@ -73,7 +73,7 @@ const OrderMap = React.createClass({
         );
         const gMap = (
             <GoogleMap
-              ref="map"
+              ref={(map) => { if(map) { window.googleMap = map.props.map; this._googleMap = map } }}
               defaultZoom={12}
               defaultCenter={center}
               onClick={() => this.handleMapClick}>

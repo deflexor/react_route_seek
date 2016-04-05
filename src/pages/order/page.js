@@ -24,6 +24,7 @@ const OrderView = React.createClass({
         this.setState({ point2: place.geometry.location });
     },
     handleDirectionsChange(dirs) {
+		//dirs.geocoded_waypoints
         const {start_address, end_address, start_location, end_location} = dirs.routes[0].legs[0];
         this.setState({ initialAddress1: start_address,
                         initialAddress2: end_address,
@@ -37,10 +38,10 @@ const OrderView = React.createClass({
               <Row>
                 <Col xs={6}>
                   <OrderForm
-                     initialAddress1={this.state.initialAddress1}
-                     initialAddress2={this.state.initialAddress2}
-                     onAddress1Select={this.handleAddress1Select}
-                     onAddress2Select={this.handleAddress2Select} />
+                      initialAddress1={this.state.initialAddress1}
+                      initialAddress2={this.state.initialAddress2}
+                      onAddress1Select={this.handleAddress1Select}
+                      onAddress2Select={this.handleAddress2Select} />
                 </Col>
                 <Col xs={6}>
                   <OrderMap points={[this.state.point1, this.state.point2]} onDirectionsChanged={this.handleDirectionsChange} />
