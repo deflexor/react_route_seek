@@ -1,13 +1,27 @@
 import React from 'react';
+import update from 'react-addons-update';
+
 
 import AutoComplete from 'material-ui/lib/auto-complete';
 import RaisedButton from 'material-ui/lib/raised-button';
+import IconButton from 'material-ui/lib/icon-button';
+import FloatingActionButton from 'material-ui/lib/floating-action-button';
 import Card from 'material-ui/lib/card/card';
 import CardActions from 'material-ui/lib/card/card-actions';
 import CardTitle from 'material-ui/lib/card/card-title';
 import CardHeader from 'material-ui/lib/card/card-header';
 import CardText from 'material-ui/lib/card/card-text';
 import MenuItem from 'material-ui/lib/menus/menu-item';
+
+import Table from 'material-ui/lib/table/table';
+import TableHeaderColumn from 'material-ui/lib/table/table-header-column';
+import TableRow from 'material-ui/lib/table/table-row';
+import TableHeader from 'material-ui/lib/table/table-header';
+import TableRowColumn from 'material-ui/lib/table/table-row-column';
+import TableBody from 'material-ui/lib/table/table-body';
+
+import ContentAddIcon from 'material-ui/lib/svg-icons/content/add';
+import RmIcon from 'material-ui/lib/svg-icons/content/remove-circle-outline';
 
 import FMUI from 'formsy-material-ui';
 const { FormsyCheckbox, FormsyDate, FormsyRadio, FormsyRadioGroup, FormsySelect, FormsyText, FormsyTime, FormsyToggle } = FMUI;
@@ -80,7 +94,8 @@ const OrderForm = React.createClass({
             users: [],
             address1: null,
             address2: null,
-            canSubmit: false
+            canSubmit: false,
+            orderLines: []
         };
     },
     componentDidMount() {
@@ -107,6 +122,7 @@ const OrderForm = React.createClass({
         });
     },
     submitForm (model, reset, invalidate) {
+        console.log(model);
         const geoPlaces = ["from_place", "to_place"].map( (n) => this.refs[n].getValue() );
         //fetchPlaces(geoPlaces).then((places) => {
         ["from_place", "to_place"].forEach((n, i) => model[n] = geoPlaces[i]);
@@ -131,13 +147,25 @@ const OrderForm = React.createClass({
     onAddress2Select(place) {
         this.setState({ address2: place });
         this.props.onAddress2Select(place);
-    }, 
+    },
+    addItemRow() {
+        const row = { cargo: '', price: '0.0', order: '1' };
+        this.setState({ orderLines: update(this.state.orderLines, { $push: [row] }) });
+    },
+    delItemRow(i) {
+        this.setState({ orderLines: update(this.state.orderLines, { $splice: [[i, 1]] }) });
+    },
+    onRowItemChanged(e, fld, idx) {
+        const v = e.target.value;
+        const ol = this.state.orderLines.slice();
+        ol[idx][fld] = v;
+        this.setState({ orderLines: ol });
+        //this.setState({ orderLines: update(this.state.orderLines, { [idx]: { [fld]: { $set: v } } }) });
+    },
     render() {
         return (
             <Formsy.Form
               ref="form"
-              onValid={this.enableButton}
-              onInvalid={this.disableButton}
               onSubmit={this.submitForm}
             >
               <Card className={styles.card}>
@@ -222,6 +250,36 @@ const OrderForm = React.createClass({
                       floatingLabelText="Комментарий"
                       tabIndex={10}
                   /><br/>
+                </CardText>
+                <CardTitle title="Состав заказа" subtitle="список позиций заказа" className={styles.cardTitle1}/>
+                <CardText>
+                  <FloatingActionButton
+                      title="добавить позицию" mini={true} secondary={true}
+                      onTouchTap={this.addItemRow}>
+                    <ContentAddIcon />
+                  </FloatingActionButton>
+                  <div className={styles.clear}></div>
+                  <Table selectable={false}>
+                    <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+                      <TableRow>
+                        <TableHeaderColumn>Название</TableHeaderColumn>
+                        <TableHeaderColumn>Цена</TableHeaderColumn>
+                        <TableHeaderColumn>Количество</TableHeaderColumn>
+                        <TableHeaderColumn></TableHeaderColumn>
+                      </TableRow>
+                    </TableHeader>
+                   <TableBody displayRowCheckbox={false} selectable={false}>
+                      {this.state.orderLines.map((ol, i) => 
+                          <TableRow key={i} selectable={false}>
+                            <TableRowColumn><FormsyText name={'items.cargo'} value={ol.cargo} onChange={(e) => this.onRowItemChanged(e, 'cargo', i)} /></TableRowColumn>
+                            <TableRowColumn><FormsyText name={'items.price'} value={ol.price} onChange={(e) => this.onRowItemChanged(e, 'price', i)} /></TableRowColumn>
+                            <TableRowColumn><FormsyText name={'items.order'} value={ol.order} onChange={(e) => this.onRowItemChanged(e, 'order', i)} /></TableRowColumn>
+                            <TableRowColumn><IconButton onTouchTap={() => this.delItemRow(i)} className={styles.svgRed}><RmIcon /></IconButton>
+                            </TableRowColumn>
+                          </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
                 </CardText>
                 <CardActions>
                   <RaisedButton label="Сохранить" type="submit" primary={true} tabIndex={11}  />

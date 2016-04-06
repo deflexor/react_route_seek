@@ -3,10 +3,24 @@
     padding-bottom: 0px !important;
 }
 
+
+.cardTitle1 {
+    padding-bottom: 0px !important;
+    float: left;
+}
+
+.clear {
+    clear: both;
+}
+
 .label1 > span {
     display: block;
 }
 
 .label1 > div {
     display: inline-block;
+}
+
+.svgRed path {
+    fill: #d50000;
 }
