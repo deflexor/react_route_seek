@@ -5,13 +5,13 @@ import update from 'react-addons-update';
 import AutoComplete from 'material-ui/lib/auto-complete';
 import RaisedButton from 'material-ui/lib/raised-button';
 import IconButton from 'material-ui/lib/icon-button';
-import FloatingActionButton from 'material-ui/lib/floating-action-button';
 import Card from 'material-ui/lib/card/card';
 import CardActions from 'material-ui/lib/card/card-actions';
 import CardTitle from 'material-ui/lib/card/card-title';
 import CardHeader from 'material-ui/lib/card/card-header';
 import CardText from 'material-ui/lib/card/card-text';
 import MenuItem from 'material-ui/lib/menus/menu-item';
+import TextField from 'material-ui/lib/text-field';
 
 import Table from 'material-ui/lib/table/table';
 import TableHeaderColumn from 'material-ui/lib/table/table-header-column';
@@ -20,13 +20,14 @@ import TableHeader from 'material-ui/lib/table/table-header';
 import TableRowColumn from 'material-ui/lib/table/table-row-column';
 import TableBody from 'material-ui/lib/table/table-body';
 
-import ContentAddIcon from 'material-ui/lib/svg-icons/content/add';
 import RmIcon from 'material-ui/lib/svg-icons/content/remove-circle-outline';
+import AddIcon from 'material-ui/lib/svg-icons/content/add-circle-outline';
 
 import FMUI from 'formsy-material-ui';
-const { FormsyCheckbox, FormsyDate, FormsyRadio, FormsyRadioGroup, FormsySelect, FormsyText, FormsyTime, FormsyToggle } = FMUI;
+const { FormsyCheckbox, FormsyDate, FormsyRadio, FormsyRadioGroup, FormsySelect, FormsyTime, FormsyToggle } = FMUI;
 import FormsyAutoText from './FormsyAutoText';
 import FormsyLocDate from './FormsyLocDate';
+import FormsyText from './FormsyTextLight';
 
 import fetch from 'isomorphic-fetch';
 
@@ -126,6 +127,7 @@ const OrderForm = React.createClass({
         const geoPlaces = ["from_place", "to_place"].map( (n) => this.refs[n].getValue() );
         //fetchPlaces(geoPlaces).then((places) => {
         ["from_place", "to_place"].forEach((n, i) => model[n] = geoPlaces[i]);
+        model.items = this.state.orderLines;
         fetch('/api/orders.json', {
             method: 'POST',
             headers: {
@@ -209,28 +211,28 @@ const OrderForm = React.createClass({
                         autoOk={true}
                         hintText="от"
                         tabIndex={4}
-                    />
+                    /><br/>
                     <FormsyLocDate
                         name="start_date_down"
                         autoOk={true}
                         hintText="до"
                         tabIndex={5}
                     />
-                  </label>
+                  </label><br/>
                   <label className={styles.label1}>Дата выгрузки 
                     <FormsyLocDate
                         name="end_date_up"
                         autoOk={true}
                         hintText="от"
                         tabIndex={6}
-                    />
+                    /><br/>
                     <FormsyLocDate
                         name="end_date_down"
                         autoOk={true}
                         hintText="до"
                         tabIndex={7}
                     />
-                  </label>
+                  </label><br/>
                   <FormsyText
                       name="code"
                       hintText="12345"
@@ -251,29 +253,24 @@ const OrderForm = React.createClass({
                       tabIndex={10}
                   /><br/>
                 </CardText>
-                <CardTitle title="Состав заказа" subtitle="список позиций заказа" className={styles.cardTitle1}/>
+                <CardTitle title="Состав заказа" subtitle="список позиций заказа" className={styles.cardTitle}/>
                 <CardText>
-                  <FloatingActionButton
-                      title="добавить позицию" mini={true} secondary={true}
-                      onTouchTap={this.addItemRow}>
-                    <ContentAddIcon />
-                  </FloatingActionButton>
                   <div className={styles.clear}></div>
                   <Table selectable={false}>
-                    <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+                  <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
                       <TableRow>
                         <TableHeaderColumn>Название</TableHeaderColumn>
                         <TableHeaderColumn>Цена</TableHeaderColumn>
                         <TableHeaderColumn>Количество</TableHeaderColumn>
-                        <TableHeaderColumn></TableHeaderColumn>
+                        <TableHeaderColumn><IconButton onTouchTap={this.addItemRow} className={styles.svgGreen}><AddIcon /></IconButton></TableHeaderColumn>
                       </TableRow>
                     </TableHeader>
                    <TableBody displayRowCheckbox={false} selectable={false}>
                       {this.state.orderLines.map((ol, i) => 
                           <TableRow key={i} selectable={false}>
-                            <TableRowColumn><FormsyText name={'items.cargo'} value={ol.cargo} onChange={(e) => this.onRowItemChanged(e, 'cargo', i)} /></TableRowColumn>
-                            <TableRowColumn><FormsyText name={'items.price'} value={ol.price} onChange={(e) => this.onRowItemChanged(e, 'price', i)} /></TableRowColumn>
-                            <TableRowColumn><FormsyText name={'items.order'} value={ol.order} onChange={(e) => this.onRowItemChanged(e, 'order', i)} /></TableRowColumn>
+                            <TableRowColumn><TextField name="items1.cargo" value={ol.cargo} onChange={(e) => this.onRowItemChanged(e, 'cargo', i)} /></TableRowColumn>
+                            <TableRowColumn><TextField name="items1.price" value={ol.price} onChange={(e) => this.onRowItemChanged(e, 'price', i)} /></TableRowColumn>
+                            <TableRowColumn><TextField name="items1.order" value={ol.order} onChange={(e) => this.onRowItemChanged(e, 'order', i)} /></TableRowColumn>
                             <TableRowColumn><IconButton onTouchTap={() => this.delItemRow(i)} className={styles.svgRed}><RmIcon /></IconButton>
                             </TableRowColumn>
                           </TableRow>
